@@ -1,0 +1,11 @@
+# Ignorowanie plików konfiguracyjnych z wrażliwymi danymi
+.env
+
+# Ignorowanie plików tymczasowych i kompilowanych
+__pycache__/
+*.pyc
+*.pyo
+
+# Ignorowanie logów
+*.log
+logs/
