@@ -1,0 +1,14 @@
+# Lista zależności dla mikroserwisu przetwarzania PDF
+
+fastapi
+uvicorn
+pdfplumber
+python-dotenv
+sentence-transformers
+pinecone-client
+faiss-cpu
+redis
+
+
+
+#TODO: change template
