@@ -1,3 +1,10 @@
+# Lista zależności dla mikroserwisu LLM
+
+fastapi
+uvicorn
+openai
+python-dotenv
+pytest
 
 
 
