@@ -1,0 +1,9 @@
+# config/config.yaml
+# Konfiguracja dla mikroserwisu przetwarzania PDF
+
+database:
+  type: "pinecone"   # Typ bazy danych (pinecone/faiss)
+  index_name: "rag_llm_index"  # Nazwa indeksu używanego do przechowywania embeddingów
+
+
+#TODO: change template
