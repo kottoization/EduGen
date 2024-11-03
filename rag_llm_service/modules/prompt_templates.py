@@ -1,6 +1,6 @@
 from langchain.prompts import ChatPromptTemplate
 
-def quiz_generate_list_of_questions(self, user_query: str) -> str:
+def quiz_generate_list_of_questions(self, user_query: str):
         messages = [
             ("system", """
             You are an AI language model assistant with expertise in educational content creation.
@@ -25,6 +25,6 @@ def quiz_generate_list_of_questions(self, user_query: str) -> str:
         ]
 
         prompt_template = ChatPromptTemplate.from_messages(messages)
-        prompt = prompt_template.invoke({"topic":user_query})
+        questions = prompt_template.invoke({"topic":user_query})
 
-        return(prompt)
+        return(questions)
