@@ -6,9 +6,14 @@ from langchain_core.runnables import RunnablePassthrough
 from langchain.load import dumps, loads
 
 #TODO: change template -> think of what do I really need it to 
+<<<<<<< HEAD
 #comments: pewnie moze byc to przydatne przy generowaniu odpowiedzi, generowaniu notatek itp 
 
 def needs_changes_multi_query(user_query: str):
+=======
+# not added : unique_union
+def multi_query(user_query: str):
+>>>>>>> 9abd13334f68056c078fd69e7b02be64bde6a8a9
     """You are an AI language model assistant. Your task is to generate five 
     different versions of the given user question to retrieve relevant documents from a vector 
     database. By generating multiple perspectives on the user question, your goal is to help
@@ -24,7 +29,11 @@ def needs_changes_multi_query(user_query: str):
 
     return generate_queries
 
+<<<<<<< HEAD
 def needs_changes_get_unique_union(documents: list[list]):
+=======
+def get_unique_union(documents: list[list]):
+>>>>>>> 9abd13334f68056c078fd69e7b02be64bde6a8a9
     """ Unique union of retrieved docs """
     # Flatten list of lists, and convert each Document to string
     flattened_docs = [dumps(doc) for sublist in documents for doc in sublist]
@@ -33,7 +42,11 @@ def needs_changes_get_unique_union(documents: list[list]):
     # Return
     return [loads(doc) for doc in unique_docs]
 
+<<<<<<< HEAD
 def needs_changes_generate_multi_query_different_perspectives(user_query: str):
+=======
+def generate_multi_query_different_perspectives(user_query: str):
+>>>>>>> 9abd13334f68056c078fd69e7b02be64bde6a8a9
     
     #TODO: ADD whatss below in order for it to work
     
