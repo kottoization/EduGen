@@ -1,4 +1,6 @@
-def quiz_generate_list_of_questions(self, s: str) -> str:
+from langchain.prompts import ChatPromptTemplate
+
+def quiz_generate_list_of_questions(self, user_query: str) -> str:
         messages = [
             ("system", """
             You are an AI language model assistant with expertise in educational content creation.
@@ -21,3 +23,8 @@ def quiz_generate_list_of_questions(self, s: str) -> str:
             The goal is to assess the user's level of knowledge effectively.
             Provide the output as a numbered list of topics.""")
         ]
+
+        prompt_template = ChatPromptTemplate.from_messages(messages)
+        prompt = prompt_template.invoke({"topic":user_query})
+
+        return(prompt)
