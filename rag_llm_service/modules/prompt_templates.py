@@ -67,28 +67,36 @@ def quiz_generate_list_of_questions(self, topic: str):
 
         return(questions)    
 
-
-''' 
-messages = [
+def quiz_optimize_list_of_questions(self, questions: str):
+        messages = [
             ("system", """
             You are an AI language model assistant with expertise in educational content creation.
-            Your task is to generate a comprehensive and balanced list of topics to be covered in a short quiz based on a given query.
-            This quiz should evaluate the user's level of knowledge in the specified area and should help assess their understanding effectively.
-            
-            Please ensure that:
-            1. The list covers the core concepts, foundational theories, and important subtopics related to the given query.
-            2. The topics are ordered in a way that reflects a logical progression from basic to more advanced aspects.
-            3. You include any commonly misunderstood or tricky topics that are critical for a thorough assessment.
-            4. The quiz should be designed to take approximately 5-10 minutes to complete.
-            5. The output should be concise but sufficiently detailed to guide the creation of a well-rounded quiz.
+            Your task is to review a set of quiz questions and optimize the quiz to ensure it can be completed within 5-10 minutes.
+            Consider the total number of questions and their assigned difficulty levels.
 
-            Generate the output as a numbered list of topics.
+            Please ensure that:
+            1. The quiz maintains a balance of question difficulties, providing a comprehensive assessment.
+            2. Any removal of questions does not compromise the coverage of essential topics.
+            3. The final set of questions aligns with the intended completion time while preserving the quiz's quality.
+
+            Provide the optimized list of questions in the following format:
+            1. Question: [Your question here]
+            Difficulty: [1, 2, or 3]
+            a) [Option A]
+            b) [Option B]
+            c) [Option C]
+            d) [Option D]
+            Correct Answer: [a, b, c, or d]
             """),
-            ("human","""Based on the following topic, generate a comprehensive list of topics for a short quiz:
-            Topic: {topic}
-            Ensure that the quiz can be completed within 5-10 minutes and covers key concepts, foundational knowledge, 
-            and commonly misunderstood areas in a logical progression. 
-            The goal is to assess the user's level of knowledge effectively.
-            Provide the output as a numbered list of topics.""")
+            ("human","""Please review the following list of quiz questions to ensure the total estimated completion time aligns with the 5-10 minute target.
+             If necessary, adjust the number or difficulty of questions to maintain a balanced and comprehensive assessment of the topic. 
+             The goal is to create a quiz that effectively evaluates the user's knowledge within the specified time frame.
+             
+             List of questions : {questions} 
+             """)
         ]
-'''
+
+        prompt_template = ChatPromptTemplate.from_messages(messages)
+        questions = prompt_template.invoke({"questions":questions})
+
+        return(questions)    
