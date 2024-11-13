@@ -136,4 +136,3 @@ pytest tests/
 - Make sure the `.env` file is correctly configured before running the microservices.
 - Adjust configuration parameters in `config.yaml` files and other settings as needed for your project.
 - Before deploying to production, test the scalability, performance, and security of each microservice.
-
