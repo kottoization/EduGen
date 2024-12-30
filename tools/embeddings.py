@@ -3,7 +3,7 @@ import tiktoken
 from openai import OpenAI
 from typing import List
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-
+# TODO: this is copied from kottoization/RAG-LLM repo , should be updated in the future
 client = OpenAI(max_retries=5)
 
 embedding_model = "text-embedding-3-large"
