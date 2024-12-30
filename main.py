@@ -1,50 +1,60 @@
-from tools.prompts import instruction_str, prompt_template, context
 from dotenv import load_dotenv
-from llama_index.core.query_engine import PandasQueryEngine as pqe
-from llama_index.core.tools import QueryEngineTool, ToolMetadata
-from llama_index.core.agent import ReActAgent
-from llama_index.llms.openai import OpenAI
-from data_operations import load_articles_df
+from QuizModule.quiz_operations import generate_quiz
+from langchain_openai import ChatOpenAI
+from langchain.schema import AIMessage, HumanMessage, SystemMessage
 import os
 
 dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
 load_dotenv(dotenv_path)
 
-def query_agent(articles_df):
-    '''
-    The goal of this method is to create an PandasQueryEngine agent that will allow the user to chat with LLM chatbot.
-    '''
-    if articles_df is not None:
-        try:
-            articles_query_engine = pqe(df=articles_df, verbose=True, instruction_str=instruction_str)
-            articles_query_engine.update_prompts({"pandas_prompt": prompt_template})
+def chat_with_bot():
+    """
+    Allows the user to chat freely with the bot, maintaining a chat history.
+    """
+    try:
+        model = ChatOpenAI(model="gpt-3.5-turbo", temperature=0.1, verbose=True)
+        chat_history = []  # Store conversation history
 
-            articles_metadata = ToolMetadata(
-                name="articles_data",
-                description=(
-                    "this gives information about facts from Medium articles."
-                    "Use a detailed plain text question as input to the tool."
-                ),
-            )
+        # Initial system message
+        system_message = SystemMessage(content="You are a helpful AI assistant.")
+        chat_history.append(system_message)
 
-            query_engine_tools = [
-                QueryEngineTool(
-                    query_engine=articles_query_engine,
-                    metadata=articles_metadata,
-                ),
-            ]
-            llm = OpenAI(model="gpt-4", temperature=0.1)
+        print("You can now chat with the bot. Type 'exit' or 'q' to quit.")
+        while True:
+            query = input("You: ")
+            if query.lower() in ["exit", "q"]:  # Allow 'exit' or 'q' to quit
+                break
 
-            agent = ReActAgent.from_tools(query_engine_tools, llm=llm, verbose=True, context=context)
+            chat_history.append(HumanMessage(content=query))  # Add user message
+            response = model.invoke(chat_history)  # Get AI response
+            print(f"AI: {response.content}")
 
-            while (prompt := input("Enter a prompt (q to quit): ")) != "q":
-                result = agent.query(prompt)
-                print(result)
-        except Exception as e:
-            print(f"An error occurred while running the query agent: {str(e)}")
+            chat_history.append(AIMessage(content=response.content))  # Add AI message
+
+        print("---- Message History ----")
+        for msg in chat_history:
+            print(msg.content)
+
+    except Exception as e:
+        print(f"An error occurred while chatting with the bot: {e}")
+
+
+def main_menu():
+    """
+    Main menu for the application.
+    """
+    print("Select an option:")
+    print("1. Chat with the bot (no articles required)")
+    print("2. Generate a quiz")
+    choice = input("Enter the number of your choice: ")
+
+    if choice == "1":
+        chat_with_bot()
+    elif choice == "2":
+        subject = input("Enter the subject for the quiz: ")
+        generate_quiz(subject)
     else:
-        print("No data to query.")
+        print("Invalid choice. Please try again.")
 
 if __name__ == "__main__":
-    articles_df = load_articles_df()
-    query_agent(articles_df)
+    main_menu()
