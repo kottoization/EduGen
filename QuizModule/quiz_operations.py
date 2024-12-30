@@ -1,7 +1,6 @@
 from tools.quiz_prompts import (
     generate_topic_list_prompt,
     generate_questions_prompt,
-    assess_knowledge_level_prompt,
 )
 from langchain_openai import ChatOpenAI
 from langchain_core.runnables import RunnableParallel, RunnableLambda
@@ -25,6 +24,12 @@ def generate_quiz(subject: str):
         except Exception as e:
             raise ValueError(f"Error generating topics: {e}")
 
+        # Limit the number of topics and questions
+        max_questions = 20
+        max_topics = min(len(topics), 5)
+        topics = topics[:max_topics]
+        questions_per_topic = max_questions // max_topics
+
         # Generate questions for all topics in parallel
         print("Generating questions for all topics...")
         try:
@@ -38,34 +43,46 @@ def generate_quiz(subject: str):
 
         # Assemble the quiz interactively
         print("\nStarting the quiz...\n")
-        user_scores = {topic: 0 for topic in topics}
+        user_scores = {}
         total_questions = 0
+        total_correct = 0
 
         for topic, question_set in zip(topics, questions):
             print(f"Topic: {topic}\n")
-            question_texts = question_set.content.split("\n\n")
-            for question in question_texts:
-                print(question)
-                user_answer = input("Your answer: ").strip().lower()
+            question_texts = question_set.content.split("\n\n")[:questions_per_topic]
+            correct_answers = 0
+            total_topic_questions = len(question_texts)
 
-                # Assess the answer dynamically
+            for question in question_texts:
                 try:
+                    print(question)
+                    user_answer = input("Your answer: ").strip().lower()
+
+                    # Extract correct answer
                     correct_answer = question.split("Correct Answer: ")[-1].strip().lower()
                     if user_answer == correct_answer:
                         print("Correct!\n")
-                        user_scores[topic] += 1
+                        correct_answers += 1
                     else:
                         print(f"Wrong! The correct answer is: {correct_answer}\n")
                 except Exception as e:
                     print(f"Error parsing question or correct answer: {e}")
 
-                total_questions += 1
+            user_scores[topic] = (correct_answers, total_topic_questions)
+            total_correct += correct_answers
+            total_questions += total_topic_questions
 
         # Display final results
         print("\nFinal Results:")
-        for topic, score in user_scores.items():
-            percentage = (score / total_questions) * 100
-            print(f"Topic: {topic} - Score: {score}/{total_questions} ({percentage:.2f}%)")
+        overall_percentage = 0
+        for topic, (correct, total) in user_scores.items():
+            percentage = (correct / total) * 100 if total > 0 else 1 # TODO: change
+            overall_percentage += percentage
+            print(f"Topic: {topic} - Score: {correct}/{total} ({percentage:.2f}%)")
+
+        # Calculate and display the overall score
+        overall_percentage /= len(user_scores)
+        print(f"\nOverall Score: {total_correct}/{total_questions} ({overall_percentage:.2f}%)")
 
     except Exception as e:
         print(f"An error occurred while generating the quiz: {e}")
