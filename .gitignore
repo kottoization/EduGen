@@ -1,23 +1,3 @@
-# Ignorowanie folderów wirtualnych środowisk
+.env
+rag/
 venv/
-*/venv/
-
-# Ignorowanie plików tymczasowych i kompilowanych
-__pycache__/
-*.pyc
-*.pyo
-
-# Ignorowanie logów
-*.log
-logs/
-
-# Ignorowanie danych testowych
-tests/*.pdf
-
-# Ignorowanie plików IDE
-.vscode/
-.idea/
-*.swp
-
-TODO.txt
-
