@@ -1,5 +1,6 @@
 from dotenv import load_dotenv
-from QuizModule.quiz_operations import generate_quiz
+from QuizModule.quiz_operations import generate_quiz, generate_learning_plan_from_quiz
+from LearningPlanModule.learning_plan import LearningPlan
 from langchain_openai import ChatOpenAI
 from langchain.schema import AIMessage, HumanMessage, SystemMessage
 import os
@@ -43,18 +44,46 @@ def main_menu():
     """
     Main menu for the application.
     """
-    print("Select an option:")
-    print("1. Chat with the bot (no articles required)")
-    print("2. Generate a quiz")
-    choice = input("Enter the number of your choice: ")
+    while True:
+        print("\nSelect an option:")
+        print("1. Chat with the bot (no articles required)")
+        print("2. Generate a quiz")
+        print("3. Create a personalized learning plan")
+        print("4. Exit")
+        choice = input("Enter the number of your choice: ")
 
-    if choice == "1":
-        chat_with_bot()
-    elif choice == "2":
-        subject = input("Enter the subject for the quiz: ")
-        generate_quiz(subject)
-    else:
-        print("Invalid choice. Please try again.")
+        if choice == "1":
+            chat_with_bot()
+        elif choice == "2":
+            subject = input("Enter the subject for the quiz: ")
+            generate_quiz(subject)
+        elif choice == "3":
+            print("\nSelect an option:")
+            print("1. Take a quiz to generate a learning plan")
+            print("2. Input custom learning goals")
+            sub_choice = input("Enter your choice: ")
+
+            if sub_choice == "1":
+                subject = input("Enter the subject for the quiz: ")
+                quiz_results = generate_quiz(subject)  # Generates quiz and returns results
+                user_name = input("Enter your name: ")
+                generate_learning_plan_from_quiz(user_name, quiz_results)
+            elif sub_choice == "2":
+                user_name = input("Enter your name: ")
+                goals_input = input("Enter your learning goals (comma-separated): ")
+                user_input = {
+                    "goals": [goal.strip() for goal in goals_input.split(",")]
+                }
+                plan = LearningPlan(user_name=user_name)
+                plan.generate_plan_from_prompt(user_input)
+                plan.display_plan()
+            else:
+                print("Invalid choice. Please try again.")
+        elif choice == "4":
+            print("Goodbye!")
+            break
+        else:
+            print("Invalid choice. Please try again.")
 
 if __name__ == "__main__":
     main_menu()

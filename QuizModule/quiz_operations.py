@@ -4,7 +4,7 @@ from tools.quiz_prompts import (
 )
 from langchain_openai import ChatOpenAI
 from langchain_core.runnables import RunnableParallel, RunnableLambda
-
+from LearningPlanModule.learning_plan import LearningPlan
 
 def generate_quiz(subject: str):
     """
@@ -76,7 +76,7 @@ def generate_quiz(subject: str):
         print("\nFinal Results:")
         overall_percentage = 0
         for topic, (correct, total) in user_scores.items():
-            percentage = (correct / total) * 100 if total > 0 else 1 # TODO: change
+            percentage = (correct / total) * 100 if total > 0 else 1
             overall_percentage += percentage
             print(f"Topic: {topic} - Score: {correct}/{total} ({percentage:.2f}%)")
 
@@ -84,5 +84,17 @@ def generate_quiz(subject: str):
         overall_percentage /= len(user_scores)
         print(f"\nOverall Score: {total_correct}/{total_questions} ({overall_percentage:.2f}%)")
 
+        return user_scores
+
     except Exception as e:
         print(f"An error occurred while generating the quiz: {e}")
+        return {}
+
+def generate_learning_plan_from_quiz(user_name, quiz_results):
+    """
+    Generates a learning plan based on quiz results.
+    """
+    plan = LearningPlan(user_name=user_name, quiz_results=quiz_results)
+    learning_plan = plan.generate_plan()
+    plan.display_plan()
+    return learning_plan
