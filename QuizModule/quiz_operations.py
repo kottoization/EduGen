@@ -2,8 +2,11 @@ from tools.quiz_prompts import (
     generate_topic_list_prompt,
     generate_questions_prompt,
 )
-from langchain_openai import ChatOpenAI
-from langchain_core.runnables import RunnableParallel, RunnableLambda
+# from langchain_openai import ChatOpenAI
+# from langchain_core.runnables import RunnableParallel, RunnableLambda
+from langchain.chat_models import ChatOpenAI
+from langchain.schema.runnable import RunnableParallel, RunnableLambda
+
 from LearningPlanModule.learning_plan import LearningPlan
 
 def generate_quiz(subject: str):
@@ -23,6 +26,9 @@ def generate_quiz(subject: str):
             print(f"Generated topics: {topics}")
         except Exception as e:
             raise ValueError(f"Error generating topics: {e}")
+
+        # Skip empty topics
+        topics = [topic.strip() for topic in topics if topic.strip()]
 
         # Limit the number of topics and questions
         max_questions = 20

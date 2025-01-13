@@ -1,8 +1,8 @@
 from dotenv import load_dotenv
 from QuizModule.quiz_operations import generate_quiz, generate_learning_plan_from_quiz
 from LearningPlanModule.learning_plan import LearningPlan
-from langchain_openai import ChatOpenAI
-from langchain.schema import AIMessage, HumanMessage, SystemMessage
+from langchain.chat_models import ChatOpenAI
+from langchain.schema.messages import AIMessage, HumanMessage, SystemMessage
 import os
 
 dotenv_path = os.path.join(os.path.dirname(__file__), '.env')

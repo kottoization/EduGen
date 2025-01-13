@@ -1,5 +1,5 @@
 import datetime
-from langchain.llms import OpenAI  # Ensure you have the appropriate LLM integration
+from langchain.chat_models import ChatOpenAI
 
 class LearningPlan:
     def __init__(self, user_name, quiz_results=None, user_goals=None):
@@ -7,7 +7,7 @@ class LearningPlan:
         self.quiz_results = quiz_results if quiz_results else {}
         self.user_goals = user_goals if user_goals else {}
         self.learning_plan = []
-        self.llm = OpenAI()  # Initialize your LLM instance
+        self.llm = ChatOpenAI(model="gpt-3.5-turbo", temperature=0.7, verbose=True)  # Użycie ChatOpenAI
 
     def analyze_quiz_results(self):
         """
@@ -17,10 +17,15 @@ class LearningPlan:
         moderate_areas = []  # Score between 50% and 70%
         good_areas = []      # Score above 70%
 
-        for topic, score in self.quiz_results.items():
-            if score < 50:
+        for topic, (correct_answers, total_questions) in self.quiz_results.items():
+            if total_questions == 0:  # Uniknięcie dzielenia przez zero
+                percentage_score = 0
+            else:
+                percentage_score = (correct_answers / total_questions) * 100
+
+            if percentage_score < 50:
                 critical_areas.append(topic)
-            elif 50 <= score < 70:
+            elif 50 <= percentage_score < 70:
                 moderate_areas.append(topic)
             else:
                 good_areas.append(topic)
@@ -71,10 +76,20 @@ class LearningPlan:
         """
         Retrieve recommended materials for a given topic using LLM.
         """
-        prompt = f"Provide a list of recommended study materials for learning {topic}."
-        response = self.llm(prompt)
-        materials = response.split('\n')  # Assuming each material is on a new line
-        return materials
+        prompt = (
+            f"You are an AI assistant tasked with recommending study materials. "
+            f"Provide a concise but short list of materials to help someone learn about '{topic}'."
+        )
+        try:
+            # Invoke ChatOpenAI directly with a string prompt
+            response = self.llm.invoke(prompt)
+            materials = response.content.split("\n")  # Assuming each material is in a new line
+            return materials
+        except Exception as e:
+            print(f"Error while generating materials for topic '{topic}': {e}")
+            return ["No materials available"]
+
+
 
     def generate_plan_from_prompt(self, user_input):
         """
