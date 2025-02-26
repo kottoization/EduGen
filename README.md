@@ -1,3 +1,4 @@
+// ReadMe needs to be updated, I'll do so once the app is ready to use
 # EduGen
 
 EduGen is a microservices-based application aimed at supporting the learning process. The project consists of two main Python microservices, leveraging RAG (Retrieval-Augmented Generation) with LLM (Large Language Model) to generate educational content such as quizzes, learning plans, summaries, and cheat sheets.
