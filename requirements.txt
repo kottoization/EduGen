@@ -19,3 +19,8 @@ nest-asyncio==1.6.0
 tenacity==8.5.0
 pydantic==2.10.5
 pydantic-core==2.27.2
+
+# Files processing
+chromadb
+pymupdf
+unstructured

@@ -1,12 +1,54 @@
 from dotenv import load_dotenv
+import os
 from QuizModule.quiz_operations import generate_quiz, generate_learning_plan_from_quiz
 from LearningPlanModule.learning_plan import LearningPlan
 from langchain.chat_models import ChatOpenAI
 from langchain.schema.messages import AIMessage, HumanMessage, SystemMessage
-import os
+from DocumentModule.file_handler import save_uploaded_file
+from DocumentModule.text_extractor import extract_text_and_images
+from DocumentModule.embedding_manager import generate_embedding
+from DocumentModule.chroma_manager import initialize_chroma, embedding_exists, add_embedding
 
 dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
 load_dotenv(dotenv_path)
+
+def upload_and_process_document():
+    file_path = input("Type file path: ")
+    text, images = extract_text_and_images(file_path)
+
+    if not text:
+        print("There was an error while extracting text from the file.")
+        return
+
+    texts, embeddings = generate_embeddings(text)
+
+    if not texts or not embeddings:
+        print("Failed to generate embeddings.")
+        return
+
+    chroma_client = initialize_chroma()
+    added_chunks = 0
+    skipped_chunks = 0
+
+    for chunk_text, embedding in zip(texts, embeddings):
+        metadata = {
+            "source": file_path,
+            "chunk_preview": chunk_text[:100]  # optional preview of the chunk
+        }
+
+        if not embedding_exists(chroma_client, embedding):
+            chroma_client.add_texts(
+                texts=[chunk_text],
+                embeddings=[embedding],
+                metadatas=[metadata]
+            )
+            added_chunks += 1
+        else:
+            skipped_chunks += 1
+
+    print(f"Processing completed. Added {added_chunks} new chunks, skipped {skipped_chunks} duplicates.")
+
+
 
 def chat_with_bot():
     """
@@ -49,7 +91,8 @@ def main_menu():
         print("1. Chat with the bot (no articles required)")
         print("2. Generate a quiz")
         print("3. Create a personalized learning plan")
-        print("4. Exit")
+        print("4. Upload and process document")
+        print("5. Exit")
         choice = input("Enter the number of your choice: ")
 
         if choice == "1":
@@ -80,6 +123,8 @@ def main_menu():
             else:
                 print("Invalid choice. Please try again.")
         elif choice == "4":
+            upload_and_process_document()
+        elif choice == "5":
             print("Goodbye!")
             break
         else:
