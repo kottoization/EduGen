@@ -4,7 +4,7 @@ from tools.quiz_prompts import (
 )
 # from langchain_openai import ChatOpenAI
 # from langchain_core.runnables import RunnableParallel, RunnableLambda
-from langchain.chat_models import ChatOpenAI
+from langchain_community.chat_models import ChatOpenAI
 from langchain.schema.runnable import RunnableParallel, RunnableLambda
 
 from LearningPlanModule.learning_plan import LearningPlan

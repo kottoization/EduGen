@@ -1,5 +1,5 @@
 import datetime
-from langchain.chat_models import ChatOpenAI
+from langchain_community.chat_models import ChatOpenAI
 
 class LearningPlan:
     def __init__(self, user_name, quiz_results=None, user_goals=None):

@@ -2,3 +2,4 @@
 rag/
 venv/
 .venv
+__pycache__

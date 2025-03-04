@@ -2,7 +2,7 @@ from dotenv import load_dotenv
 import os
 from QuizModule.quiz_operations import generate_quiz, generate_learning_plan_from_quiz
 from LearningPlanModule.learning_plan import LearningPlan
-from langchain.chat_models import ChatOpenAI
+from langchain_community.chat_models import ChatOpenAI
 from langchain.schema.messages import AIMessage, HumanMessage, SystemMessage
 from DocumentModule.file_handler import save_uploaded_file
 from DocumentModule.text_extractor import extract_text_and_images
