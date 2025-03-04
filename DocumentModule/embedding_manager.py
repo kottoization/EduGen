@@ -21,4 +21,4 @@ def generate_embeddings(text, model_name="text-embedding-3-large", chunk_size=45
         return texts, embeddings_list
     except Exception as e:
         print(f"An error occurred while generating embeddings: {str(e)}")
-        return None
+        return [], []

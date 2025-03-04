@@ -6,7 +6,7 @@ from langchain.chat_models import ChatOpenAI
 from langchain.schema.messages import AIMessage, HumanMessage, SystemMessage
 from DocumentModule.file_handler import save_uploaded_file
 from DocumentModule.text_extractor import extract_text_and_images
-from DocumentModule.embedding_manager import generate_embedding
+from DocumentModule.embedding_manager import generate_embeddings
 from DocumentModule.chroma_manager import initialize_chroma, embedding_exists, add_embedding
 
 dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
@@ -37,11 +37,7 @@ def upload_and_process_document():
         }
 
         if not embedding_exists(chroma_client, embedding):
-            chroma_client.add_texts(
-                texts=[chunk_text],
-                embeddings=[embedding],
-                metadatas=[metadata]
-            )
+            add_embedding(chroma_client, chunk_text, embedding, metadata)
             added_chunks += 1
         else:
             skipped_chunks += 1
