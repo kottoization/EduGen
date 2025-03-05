@@ -1,5 +1,6 @@
 import os
 import fitz  # PyMuPDF
+import pandas as pd
 from unstructured.partition.pdf import partition_pdf
 from unstructured.partition.docx import partition_docx
 from unstructured.partition.pptx import partition_pptx
@@ -53,3 +54,4 @@ def extract_with_unstructured(file_path, partition_function):
     except Exception as e:
         print(f"[Error] An error occurred while extracting {file_path} using {partition_function.__name__}: {str(e)}")
         return None, None
+

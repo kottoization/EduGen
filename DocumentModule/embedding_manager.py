@@ -11,6 +11,10 @@ def generate_embeddings(text, model_name="text-embedding-3-large", chunk_size=45
         )
         # Split the text into manageable chunks
         texts = text_splitter.split_text(text)
+
+        if not texts: 
+            print("No text chunks were created.")
+            return [], [] 
         
         # Initialize the embeddings model
         embeddings = OpenAIEmbeddings(model=model_name)
