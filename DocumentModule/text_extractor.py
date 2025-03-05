@@ -16,6 +16,8 @@ def extract_text_and_images(file_path):
         return extract_from_pdf(file_path)
     elif file_extension == '.docx':
         return extract_with_unstructured(file_path, partition_docx)
+    elif file_extension == '.csv':
+        return extract_from_csv(file_path)
     elif file_extension == '.pptx':
         return extract_with_unstructured(file_path, partition_pptx)
     elif file_extension in ['.jpg', '.jpeg', '.png']:
@@ -55,3 +57,12 @@ def extract_with_unstructured(file_path, partition_function):
         print(f"[Error] An error occurred while extracting {file_path} using {partition_function.__name__}: {str(e)}")
         return None, None
 
+def extract_from_csv(file_path):  # ❤️ Dodano funkcję do CSV
+    try:
+        df = pd.read_csv(file_path)
+        text = df.to_string(index=False)
+        images = []
+        return text, images
+    except Exception as e:
+        print(f"[Error] An error occurred while extracting CSV {file_path}: {str(e)}")
+        return None, None
